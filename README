@@ -1,0 +1,39 @@
+DisableActivercordValidation
+============================
+
+This is just a wrapper for a simple mixin to handle Active Record disable validations.
+
+Example
+=======
+
+This model shows the example, how to extend yours:
+
+class Book < ActiveRecord::Base
+
+    # 1. Include the main mixin from your model:
+    include CanDisableValidation
+
+    # 2. extend the critical validator expressions like this below:
+    validates_uniqueness_of :title, :unless => :validation_disabled?
+
+    # or you can use other keywords too ...
+    validate_presence_of :author, :if => :validation_enabled?
+
+end
+
+
+You are now able to save without validations:
+
+b = Book.new( :author => nil )
+b.disable_validation!
+b.save!
+
+b.title = 'Kutyafej'
+b.enable_validation!
+b.save!
+
+# => throws exception, becaouse the missing author ...
+
+
+
+Copyright (c) 2009 [ypetya], released under the MIT license
